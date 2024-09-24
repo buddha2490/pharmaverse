@@ -1,0 +1,27 @@
+---
+title: "Intro to tables"
+format: html
+editor: visual
+---
+
+# Table packages
+
+1.   GT package - developed by Posit
+    1.  Creates tables in HTML
+    2.  Supports word, PDF, RTF, PNG, etc
+    3.  very popular
+2.  Flextable
+    1.  Word output
+3.  Huxtable
+    1.  PDF tables, written for LaTex
+    2.  Also works well for Excel
+4.  kableExtra -
+    1.  adds extra to knitr::kable()
+    2.  Good for PDF/LaTeX tables
+5.  knitr::kabel()
+    1.  very quick and simple solution
+    2.  good for HTML output (stack overflow, github, etc)
+
+## Pharmaverse tabling packages
+
+1.  

@@ -1,0 +1,98 @@
+---
+title: "Notes"
+format: html
+editor: visual
+---
+
+## What is admiral
+
+-   Admiral is a toolbox for programming CDISC compliant ADAM datasets
+
+## Exercises
+
+## Load packages
+
+```{r}
+library(admiral)
+library(pharmaversesdtm) # Contains example datasets from the CDISC pilot project
+library(dplyr)
+library(lubridate)
+library(stringr)
+```
+
+## Example datasets
+
+```{r}
+data("dm") # demography dataset
+data("ds") # disposition dataset
+data("ex") # exposure dataset
+data("ae") # adverse events dataset
+data("lb") # laboratory dataset
+```
+
+## Convert SAS "" to NA's
+
+```{r}
+
+# tidyverse example:
+foo <- dm
+foo <- foo %>%
+  dplyr::mutate(across(everything(),  ~ ifelse(. == "", NA, .)))
+
+
+# Pharmaverse equivalent 
+dm <- convert_blanks_to_na(dm)
+ds <- convert_blanks_to_na(ds)
+ex <- convert_blanks_to_na(ex)
+ae <- convert_blanks_to_na(ae)
+lb <- convert_blanks_to_na(lb)
+
+```
+
+
+## Creating custom function wrappers
+
+
+```{r}
+
+# tidyverse example
+foo <- foo %>%
+  mutate(RACEGR1 = if_else(is.na(RACE), "Missing", if_else(
+    RACE == "WHITE", "White", "Non-white")))
+
+foo <- foo %>%
+  mutate(RACEGR2 = case_when(
+    RACE == "WHITE" ~ "White",
+    RACE != "WHITE" ~ "Non-white",
+    TRUE ~ "Missing"
+  ))
+
+# custom admiral function
+format_race <- function(x) {
+  case_when(
+    x == "WHITE" ~ "White",
+    x != "WHITE" ~ "Non-white",
+    TRUE ~ "Missing"
+  )
+}
+
+# calling the  function
+foo <- foo %>%
+  mutate(RACEGR3 = format_race(RACE))
+
+# works!
+table(foo$RACEGR1, foo$RACEGR3)
+
+```
+
+
+
+
+## xportr - writing to a file
+
+Now I want to save the data as xpt files - ADaM or SDTM.  `xportr` is a package that uses `haven` under the hood to do some checks and verify the formats for xpt 
+
+1.  Make dataset using admiral
+2.  xportr will check the datasets to make sure they are CDISC compliant
+  
+
